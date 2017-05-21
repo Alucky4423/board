@@ -1,0 +1,11 @@
+# bundler state
+/.bundle
+/vendor/bundle/
+/vendor/ruby/
+
+# db
+/db/*.db
+
+# log
+sequel.log
+
