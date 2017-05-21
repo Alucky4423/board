@@ -6,7 +6,8 @@ Bundler.require
 
 require 'securerandom'
 
-Dir.glob("{infrastructure,model}/**/*.rb").each do |file|
+Dir.glob("./{infrastructure,model}/**/*.rb").each do |file|
+  puts file
   require_relative file
 end
 
@@ -26,7 +27,8 @@ module Board
 
     # show threads.
     get '/threads' do
-      @threads = DB[:thread].all.reverse
+      @threads = Model::Threads.all || []
+      @threads.reverse!
       erb :threads
     end
 

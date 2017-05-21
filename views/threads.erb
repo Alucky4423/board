@@ -3,21 +3,23 @@
   <div class="col s12 m9 l10">
 
     <div class="row">
-      <div class="col s4 offset-s4">
-        <%# Modal Trigger %>
+      <%#<div class="col s4 offset-s4">
+        <%# Modal Trigger 
         <a href="#createThreadModal" class="modal-trigger btn waves-effect waves-light">Create Thread</a>
-      </div>
+      </div>%>
     </div>
 
     <div class="row">
-      <div class="col s12">
+      <div class="col s12 m10 offset-m2">
 
         <div class="divider"></div>
         <% @threads.each do |thread| %>
-        <div class="section">
-          <h5><%= thread.title %></h5>
-          <p><%= thread.create_at %></p>
-        </div>
+        <a href="/threads/<%= thread.id %>">
+          <div class="section">
+            <h5><%= thread.title %></h5>
+            <p><%= thread.created_at %></p>
+          </div>
+        </a>
         <div class="divider"></div>
         <% end %>
 
@@ -26,13 +28,22 @@
 
   </div>
 
-  <div class="colhide-on-small-only m3 l2">
-  </div>
+  <%# Right pin %>
+  <%#<div class="colhide-on-small-only m3 l2">
+  </div>%>
 
 </div>
 
+<%# Modal Trigger %>
+<div class="fixed-action-btn">
+  <a href="#createThreadModal" class="modal-trigger btn-floating btn-large waves-effect waves-light red">
+    <i class="material-icons">add</i>
+  </a>
+</div>
+
+<%# create thread form %>
 <div id="createThreadModal" class="modal bottom-sheet">
-  
+
   <form action="/threads" method="post">
     <div class="modal-content">
       <h4>Create Thread</h4>
