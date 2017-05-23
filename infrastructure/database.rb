@@ -2,7 +2,7 @@ module InfraStructure
 
   DataBase = Sequel.connect( ENV['DB_PATH'] )
 
-  DataBase.create_table? :threads do
+  DataBase.create_table? :thread do
     String :id, :primary_key => true
     String :title
     DateTime :created_at

@@ -2,7 +2,7 @@
 
 module Model
 
-  class Threads < Sequel::Model(:thread)
+  class Thread < Sequel::Model(:thread)
     def save
       self.created_at = Sequel::CURRENT_TIMESTAMP
       super()

@@ -2,7 +2,7 @@
 
 module Model
 
-  class Response < Sequel::Model
+  class Response < Sequel::Model(:response)
     def save
       self.created_at = Sequel::CURRENT_TIMESTAMP
       super()
