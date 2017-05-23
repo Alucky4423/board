@@ -33,10 +33,19 @@ module Board
 
     # create thread.
     post '/threads' do
+      # nil parameter
+      unless params[:title] || params[:description]
+        redirect '/threads'
+      end
 
+      # empty parameter
       if params[:title] == "" || params[:description] == ""
         redirect '/threads'
-        return
+      end
+      
+      # title that already exists.
+      if Model::Thread.where(:title => params[:title]).all
+        redirect '/threads'
       end
 
       UUID = SecureRandom.uuid.gsub(/-/, '')
@@ -52,16 +61,15 @@ module Board
         response.thread_id = UUID
         response.content = params[:description]
       end
-      
-      p Model::Response.all
 
       redirect '/threads'
     end
 
     # show response
     get '/threads/:id' do |id|
+      # not found thread
       @Thread = Model::Thread.where(:id => id).first
-      redirect '/threads' unless Thread
+      redirect '/threads' unless @Thread
 
       @title = @Thread.title
       @res = Model::Response.where(:thread_id => @Thread.id).all
@@ -69,8 +77,30 @@ module Board
     end
 
     #post response
-    post '/threads/:id' do |id|
-      # DB[:thread].where(:id => id)
+    post '/threads/:thread_id' do |id|
+      # not found thread
+      unless Model::Thread.where(:id => id).first
+        redirect '/threads'
+      end
+      
+      # validate parameters
+      if !params[:message] || params[:message] == ""
+        redirect 'threads/#{thread_id}'
+      end
+
+      
+      Res_id =
+        Model::Response.where(:thread_id => thread_id)
+          .all
+          .count + 1
+
+      Model::Response.create do |res|
+        res.id = Res_id
+        res.thread_id = thread_id
+        res.content = params[:message]
+      end
+      
+      redirect '/thread/#{thread_id}'
     end
   end
 
