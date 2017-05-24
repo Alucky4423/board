@@ -21,13 +21,13 @@ module Board
     end
 
     #########################
-    # Thread 
+    # Thread
     #########################
 
     # show threads.
     get '/threads' do
-      @threads = Model::Thread.all || []
-      @threads.reverse!
+      @threads = Model::Thread.all.reverse
+      @title = "Thread List"
       erb :threads
     end
 
@@ -44,7 +44,7 @@ module Board
       end
       
       # title that already exists.
-      if Model::Thread.where(:title => params[:title]).all
+      if Model::Thread.where(:title => params[:title]).all.count >= 1
         redirect '/threads'
       end
 
@@ -62,8 +62,10 @@ module Board
         response.content = params[:description]
       end
 
-      redirect '/threads'
+      # 作成したスレッドに移動する
+      redirect "/threads/#{UUID}"
     end
+
 
     # show response
     get '/threads/:id' do |id|
@@ -88,7 +90,7 @@ module Board
         redirect 'threads/#{thread_id}'
       end
 
-      
+
       Res_id =
         Model::Response.where(:thread_id => thread_id)
           .all
@@ -99,7 +101,7 @@ module Board
         res.thread_id = thread_id
         res.content = params[:message]
       end
-      
+
       redirect '/thread/#{thread_id}'
     end
   end
