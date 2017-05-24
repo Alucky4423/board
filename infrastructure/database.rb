@@ -1,6 +1,6 @@
 module InfraStructure
 
-  DataBase = Sequel.connect( ENV['DB_PATH'] )
+  DataBase = Sequel.connect( ENV['DATABASE_URL'] || "sqlite://db/database.db" )
 
   DataBase.create_table? :thread do
     String :id, :primary_key => true
