@@ -13,7 +13,7 @@
         <div class="col s11 offset-s1">
           <div class="section">
             <p><%= res.id %> : <%= res.created_at %></p>
-            <h4><%= res.content %></h4>
+            <h4><%= escape_html res.content %></h4>
           </div>
         </div>
       </div>

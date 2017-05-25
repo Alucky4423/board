@@ -16,7 +16,7 @@
         <% @threads.each do |thread| %>
         <a href="/threads/<%= thread.id %>">
           <div class="section">
-            <h5><%= thread.title %></h5>
+            <h5><%= escape_html thread.title %></h5>
             <p><%= thread.created_at %></p>
           </div>
         </a>

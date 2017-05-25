@@ -15,6 +15,10 @@ module Board
   DB = InfraStructure::DataBase
 
   class Application < Sinatra::Application
+    
+    helpers do
+      include Rack::Utils
+    end
 
     get '/' do
       erb :index
