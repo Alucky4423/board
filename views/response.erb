@@ -1,9 +1,9 @@
 <div class="row">
   <div class="col s8 offset-s2">
-    
+
   </div>
 </div>
-      
+
 <div class="row">
   <div class="col s12">
 
@@ -22,3 +22,60 @@
 
   </div>
 </div>
+
+<%# Modal Trigger %>
+<div class="fixed-action-btn">
+  <a href="#createThreadModal" class="modal-trigger btn-floating btn-large waves-effect waves-light red">
+    <i class="material-icons">add</i>
+  </a>
+</div>
+
+<%# Response form %>
+<div id="createThreadModal" class="modal bottom-sheet">
+
+  <form action="/threads/<%= @thread_id %>" method="post">
+    <div class="modal-content">
+
+      <div class="row">
+        <div class="col s12">
+          <div class="row">
+            <div class="input-field col s8 offset-s2">
+              <textarea name="response" id="response" class="materialize-textarea"></textarea>
+              <label for="description">Response</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn waves-effect waves-light" type="submit">submit
+        <i class="material-icons right">send</i>
+      </button>
+    </div>
+  </form>
+</div>
+
+
+<script>
+$(() => {
+  function breadCrumbs(threadId, title) {
+    return $(`
+      <div class="col s11 offset-s1">
+        <a href="/threads" class="breadcrumb">Threads</a>
+        <a href="/threads${threadId}" class="breadcrumb">${title}</a>
+      </div>
+    `);
+  }
+
+  // let link = $(`
+  //   <ul class="left">
+  //     <li><a href="/threads">Back to Treads</a></li>
+  //   </ul>
+  // `);
+
+  $('div#navBar').append(breadCrumbs("<%= @thread_id %>", "<%= @title %>"));
+
+  $('.modal').modal();
+});
+</script>

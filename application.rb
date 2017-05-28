@@ -15,7 +15,7 @@ module Board
   DB = InfraStructure::DataBase
 
   class Application < Sinatra::Application
-    
+
     helpers do
       include Rack::Utils
     end
@@ -31,7 +31,7 @@ module Board
     # show threads.
     get '/threads' do
       @threads = Model::Thread.all.reverse
-      @title = "Thread List"
+      @title = "Threads"
       erb :threads
     end
 
@@ -46,7 +46,7 @@ module Board
       if params[:title] == "" || params[:description] == ""
         redirect '/threads'
       end
-      
+
       # title that already exists.
       if Model::Thread.where(:title => params[:title]).all.count >= 1
         redirect '/threads'
@@ -59,7 +59,7 @@ module Board
         thread.title = params[:title]
       end
 
-      
+
       Model::Response.create do |response|
         response.id = 1
         response.thread_id = UUID
@@ -74,41 +74,42 @@ module Board
     # show response
     get '/threads/:id' do |id|
       # not found thread
-      @Thread = Model::Thread.where(:id => id).first
-      redirect '/threads' unless @Thread
+      Thread = Model::Thread.where(:id => id).first
+      redirect '/threads' unless Thread
 
-      @title = @Thread.title
-      @res = Model::Response.where(:thread_id => @Thread.id).all
+      @res = Model::Response.where(:thread_id => Thread.id).all
+      @title = Thread.title
+      @thread_id = Thread.id
       erb :response
     end
 
     #post response
-    post '/threads/:thread_id' do |id|
+    post '/threads/:thread_id' do |thread_id|
       # not found thread
-      unless Model::Thread.where(:id => id).first
+      unless Model::Thread.where(:id => thread_id).first
         redirect '/threads'
       end
-      
-      # validate parameters
-      if !params[:message] || params[:message] == ""
-        redirect 'threads/#{thread_id}'
+
+      # redirect if params is nil or empty.
+      if !params[:response] || params[:response] == ""
+        redirect "threads/#{thread_id}"
       end
 
 
       Res_id =
-        Model::Response.where(:thread_id => thread_id)
+        Model::Response
+          .where(:thread_id => thread_id)
           .all
           .count + 1
 
       Model::Response.create do |res|
         res.id = Res_id
         res.thread_id = thread_id
-        res.content = params[:message]
+        res.content = params[:response]
       end
 
-      redirect '/thread/#{thread_id}'
+      redirect "/threads/#{thread_id}"
     end
   end
 
 end
-
