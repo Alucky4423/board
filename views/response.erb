@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col s8 offset-s2">
-
+    <h2 class="center-align"><%= escape_html @title %></h2>
   </div>
 </div>
 
@@ -59,9 +59,9 @@
 
 <script>
 $(() => {
-  function breadCrumbs(threadId, title) {
+  var breadCrumbs = function(threadId, title) {
     return $(`
-      <div class="col s11 offset-s1">
+    <div class="col s10 offset-s2">
         <a href="/threads" class="breadcrumb">Threads</a>
         <a href="/threads${threadId}" class="breadcrumb">${title}</a>
       </div>
@@ -74,7 +74,7 @@ $(() => {
   //   </ul>
   // `);
 
-  $('div#navBar').append(breadCrumbs("<%= @thread_id %>", "<%= @title %>"));
+$('div#navBar').empty().append(breadCrumbs("<%= @thread_id %>", "<%= escape_html @title %>"));
 
   $('.modal').modal();
 });
