@@ -4,8 +4,6 @@
 require 'bundler'
 Bundler.require
 
-require 'securerandom'
-
 Dir.glob("./{infrastructure,model,helper}/**/*.rb").each do |file|
   require_relative file
 end
@@ -39,7 +37,7 @@ module Board
         redirect '/threads' if params[key].nil? || params[key].empty?
       end
 
-      if Thread = createThread(:title => params[:title], :desc => params[:description])
+      if Thread = create_thread(:title => params[:title], :desc => params[:description])
         redirect "/threads/#{Thread.id}"
       else
         redirect "/threads"
@@ -49,42 +47,30 @@ module Board
 
     # show response
     get '/threads/:id' do |id|
-      # not found thread
-      Thread = Model::Thread.where(:id => id).first
-      redirect '/threads' unless Thread
-
-      @res = Model::Response.where(:thread_id => Thread.id).all
-      @title = Thread.title
-      @thread_id = Thread.id
-      erb :response
+      if Thread = threads(:id => id)
+        @res       = Thread.responses
+        @title     = Thread.title
+        @thread_id = Thread.id
+        erb :response
+      else
+        redirect '/threads'
+      end
     end
 
     #post response
-    post '/threads/:thread_id' do |thread_id|
-      # not found thread
-      unless Model::Thread.where(:id => thread_id).first
+    post '/threads/:thread_id' do |id|
+      if Thread = threads(:id => id)
+        if params[:response].nil? || params[:response].empty?
+          redirect "threads/#{Thread.id}"
+        end
+
+        Thread.add_response(params[:response])
+
+        redirect "/threads/#{Thread.id}"
+      else
         redirect '/threads'
       end
 
-      # redirect if params is nil or empty.
-      if !params[:response] || params[:response] == ""
-        redirect "threads/#{thread_id}"
-      end
-
-
-      Res_id =
-        Model::Response
-          .where(:thread_id => thread_id)
-          .all
-          .count + 1
-
-      Model::Response.create do |res|
-        res.id = Res_id
-        res.thread_id = thread_id
-        res.content = params[:response]
-      end
-
-      redirect "/threads/#{thread_id}"
     end
   end
 

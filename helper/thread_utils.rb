@@ -4,21 +4,26 @@ module Helper
 
   module ThreadUtils
     # thread の一覧を返す
-    def threads()
-      return Model::Thread.all.reverse
+    def threads(id: nil)
+      if id.nil?
+        Model::Thread.all.reverse
+      else
+        Model::Thread.where(:id => id).first
+      end
     end
 
     # 引数で渡されたタイトルのthreadがあれば,
     # そのインスタンスを返す。
     # 無ければ、nilを返す。
-    def existsTitle(title:)
+    def exists_title(title:)
       return ! Model::Thread.where(:title => title).empty?
     end
 
 
     # 新規スレッドを作成
-    def createThread(title:, desc:)
-      return nil if existsTitle(:title => title)
+    # titleが重複している場合は、nil を返す
+    def create_thread(title:, desc:)
+      return nil if exists_title(:title => title)
 
       uuid = SecureRandom.uuid.gsub(/-/, '')
 
