@@ -23,9 +23,6 @@ module Board
       erb :index
     end
 
-    #########################
-    # Thread
-    #########################
 
     # show threads.
     get '/threads' do
@@ -42,26 +39,11 @@ module Board
         redirect '/threads' if params[key].nil? || params[key].empty?
       end
 
-      if existsTitle(:title => params[:title])
-        redirect '/threads'
+      if Thread = createThread(:title => params[:title], :desc => params[:description])
+        redirect "/threads/#{Thread.id}"
+      else
+        redirect "/threads"
       end
-
-      UUID = SecureRandom.uuid.gsub(/-/, '')
-
-      Model::Thread.create do |thread|
-        thread.id = UUID
-        thread.title = params[:title]
-      end
-
-
-      Model::Response.create do |response|
-        response.id = 1
-        response.thread_id = UUID
-        response.content = params[:description]
-      end
-
-      # 作成したスレッドに移動する
-      redirect "/threads/#{UUID}"
     end
 
 

@@ -7,6 +7,7 @@ module Model
       self.created_at = Sequel::CURRENT_TIMESTAMP
       super()
     end
+    
   end
 
 end
