@@ -9,7 +9,7 @@ module Model
     end
 
     def save
-      self.id = Response.generate_id(@thread_id)
+      self.id = Response.generate_id(self.thread_id)
       self.created_at = Sequel::CURRENT_TIMESTAMP
       super()
     end
