@@ -15,10 +15,15 @@ module Board
     helpers do
       include Rack::Utils
       include Helper::ThreadUtils
+
+      def invalidate(param)
+        return param.nil? || param.empty?
+      end
     end
 
     get '/' do
-      erb :index
+      redirect("/threads")
+      # erb :index
     end
 
 
@@ -30,11 +35,12 @@ module Board
       erb :threads
     end
 
+
     # create thread.
     post '/threads' do
       # params validate.
       [:title, :description].each do |key|
-        redirect '/threads' if params[key].nil? || params[key].empty?
+        redirect '/threads' if invalidate(params[key])
       end
 
       if Thread = create_thread(:title => params[:title], :desc => params[:description])
@@ -57,10 +63,12 @@ module Board
       end
     end
 
-    #post response
+
+    #add response
     post '/threads/:thread_id' do |id|
       if Thread = threads(:id => id)
-        if params[:response].nil? || params[:response].empty?
+
+        if invalidate(params[:response])
           redirect "threads/#{Thread.id}"
         end
 
