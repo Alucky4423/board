@@ -6,18 +6,17 @@ Bundler.require
 
 require 'securerandom'
 
-Dir.glob("./{infrastructure,model}/**/*.rb").each do |file|
+Dir.glob("./{infrastructure,model,helper}/**/*.rb").each do |file|
   require_relative file
 end
 
 module Board
 
-  DB = InfraStructure::DataBase
-
   class Application < Sinatra::Application
 
     helpers do
       include Rack::Utils
+      include Helper::ThreadUtils
     end
 
     get '/' do
@@ -30,25 +29,20 @@ module Board
 
     # show threads.
     get '/threads' do
-      @threads = Model::Thread.all.reverse
+      # @threads = Model::Thread.all.reverse
+      @threads = threads
       @title = "Threads"
       erb :threads
     end
 
     # create thread.
     post '/threads' do
-      # nil parameter
-      unless params[:title] || params[:description]
-        redirect '/threads'
+      # params validate.
+      [:title, :description].each do |key|
+        redirect '/threads' if params[key].nil? || params[key].empty?
       end
 
-      # empty parameter
-      if params[:title] == "" || params[:description] == ""
-        redirect '/threads'
-      end
-
-      # title that already exists.
-      if Model::Thread.where(:title => params[:title]).all.count >= 1
+      if existsTitle(:title => params[:title])
         redirect '/threads'
       end
 
