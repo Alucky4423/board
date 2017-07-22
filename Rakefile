@@ -1,7 +1,7 @@
 
 desc "Install dependenies"
 task :dependence do
-  sh "bundle install --path vendor/bundle"
+  sh "bundle install --path vendor/bundle --without=production"
 end
 
 desc "db task"
